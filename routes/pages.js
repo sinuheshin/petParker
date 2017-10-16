@@ -1,9 +1,9 @@
 app.get("/", function(req,res){
-    res.render("index.ejs", {titulo: "Maschio Shin Construtora e Incorporadora LTDA", layout: "blanklayout"});
+    res.render("index.ejs", {titulo: "Pet Parker - A casa do seu amigo fora de casa.", layout: "blanklayout"});
 })
 
 app.get("/index", function(req,res){
-    res.render("index.ejs", {titulo: "Maschio Shin Construtora e Incorporadora LTDA", layout: "blanklayout"});
+    res.render("index.ejs", {titulo: "Pet Parker - A casa do seu amigo fora de casa.", layout: "blanklayout"});
 })
 
 app.get("/404", function(req,res){
