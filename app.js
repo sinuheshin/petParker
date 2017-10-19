@@ -7,10 +7,10 @@ const nodemailer = require("nodemailer")
 const request = require("request")
 mongoose = require("mongoose")
 var uri = process.env.MONGOLAB_URI
-// mongoose.connect(uri)
-// var emailUser = process.env.NODEMAILER_USER
-// var emailPass = process.env.NODEMAILER_PASS
-// var recaptchaKey = process.env.RECAPTCHA_KEY
+mongoose.connect(uri)
+var emailUser = process.env.NODEMAILER_USER
+var emailPass = process.env.NODEMAILER_PASS
+var recaptchaKey = process.env.RECAPTCHA_KEY
 path = require("path")
 u = require("underscore")
 bodyParser = require("body-parser")
@@ -30,13 +30,13 @@ app.use(expressLayouts)
 app.set('view engine', 'ejs')
 app.set('layout', 'layout')
 
-// transporter = nodemailer.createTransport({
-//     service: 'gmail',
-//     auth: {
-//         user: emailUser,
-//         pass: emailPass
-//     }
-// });
+transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: emailUser,
+        pass: emailPass
+    }
+});
 
 var directories = ['functions', 'routes', 'models']
 directories.forEach(function(directory){
@@ -71,40 +71,40 @@ app.get("/obralist", function(req,res){
     })
 })
 
-// app.post("/contato", function(req,res){
-//
-//     request({
-//         method: 'POST',
-//         uri: 'https://www.google.com/recaptcha/api/siteverify',
-//         formData: {
-//             secret : recaptchaKey,
-//             response : req.body['g-recaptcha-response']
-//         }
-//     }, function(err, response, body){
-//
-//         if(JSON.parse(body).success){
-//             var mailOptions = {
-//                 from: req.body.email,
-//                 to: emailUser,
-//                 subject: req.body.nome,
-//                 text: "E-mail:" +" " + req.body.email + "\n" + "Mensagem:"+" " + req.body.mensagem
-//
-//             }
-//             transporter.sendMail(mailOptions, function(error, info){
-//                 if(error){
-//                     console.log(error);
-//                     res.render("page_contato.ejs", {titulo: "Contato", description: "Entre em contato conosco! Preencha nosso formulário, entre em contato ou ligue!", homeClass: "", empreendimentosClass: "", contatoClass: "active", construtoraClass: "", message:"Ops, sua mensagem não pôde ser enviada"})
-//
-//                 }else{
-//                     console.log('Message sent: ' + info.response);
-//                     res.render("page_contato.ejs", {titulo: "Contato", description: "Entre em contato conosco! Preencha nosso formulário, entre em contato ou ligue!", homeClass: "", empreendimentosClass: "", contatoClass: "active", construtoraClass: "", message: "Mensagem enviada com sucesso!"})
-//                 }
-//             })
-//         } else {
-//             res.render("page_contato.ejs", {titulo: "Contato", description: "Entre em contato conosco! Preencha nosso formulário, entre em contato ou ligue!", homeClass: "", empreendimentosClass: "", contatoClass: "active", construtoraClass: "", message: "Por favor confirmar que você não é um Robô"})
-//         }
-//     })
-// })
+app.post("/contato", function(req,res){
+
+    request({
+        method: 'POST',
+        uri: 'https://www.google.com/recaptcha/api/siteverify',
+        formData: {
+            secret : recaptchaKey,
+            response : req.body['g-recaptcha-response']
+        }
+    }, function(err, response, body){
+
+        if(JSON.parse(body).success){
+            var mailOptions = {
+                from: req.body.email,
+                to: emailUser,
+                subject: req.body.nome,
+                text: "E-mail:" +" " + req.body.email + "\n" + "Mensagem:"+" " + req.body.mensagem
+
+            }
+            transporter.sendMail(mailOptions, function(error, info){
+                if(error){
+                    console.log(error);
+                    res.render("page_contato.ejs", {titulo: "Contato", description: "Entre em contato conosco! Preencha nosso formulário, entre em contato ou ligue!", homeClass: "", empreendimentosClass: "", contatoClass: "active", construtoraClass: "", message:"Ops, sua mensagem não pôde ser enviada"})
+
+                }else{
+                    console.log('Message sent: ' + info.response);
+                    res.render("page_contato.ejs", {titulo: "Contato", description: "Entre em contato conosco! Preencha nosso formulário, entre em contato ou ligue!", homeClass: "", empreendimentosClass: "", contatoClass: "active", construtoraClass: "", message: "Mensagem enviada com sucesso!"})
+                }
+            })
+        } else {
+            res.render("page_contato.ejs", {titulo: "Contato", description: "Entre em contato conosco! Preencha nosso formulário, entre em contato ou ligue!", homeClass: "", empreendimentosClass: "", contatoClass: "active", construtoraClass: "", message: "Por favor confirmar que você não é um Robô"})
+        }
+    })
+})
 
 
 
