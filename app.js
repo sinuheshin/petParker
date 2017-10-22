@@ -6,11 +6,6 @@ ejs = require("ejs")
 const nodemailer = require("nodemailer")
 const request = require("request")
 mongoose = require("mongoose")
-var uri = process.env.MONGOLAB_URI
-mongoose.connect(uri)
-var emailUser = process.env.NODEMAILER_USER
-var emailPass = process.env.NODEMAILER_PASS
-var recaptchaKey = process.env.RECAPTCHA_KEY
 path = require("path")
 u = require("underscore")
 bodyParser = require("body-parser")
@@ -26,9 +21,16 @@ app.use(session({secret: "cookie_secret", resave: true, saveUninitialized: true}
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(expressLayouts)
-
 app.set('view engine', 'ejs')
 app.set('layout', 'layout')
+
+
+
+var uri = process.env.MONGOLAB_URI
+mongoose.connect(uri)
+var emailUser = process.env.NODEMAILER_USER
+var emailPass = process.env.NODEMAILER_PASS
+var recaptchaKey = process.env.RECAPTCHA_KEY
 
 transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -37,39 +39,6 @@ transporter = nodemailer.createTransport({
         pass: emailPass
     }
 });
-
-var directories = ['functions', 'routes', 'models']
-directories.forEach(function(directory){
-    requireDir(directory)
-});
-
-var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080
-var ip = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0'
-
-app.listen(port, ip)
-
-
-
-app.get("/userlist", isLoggedIn, function(req,res){
-    User.find(function (err,users) {
-        if(err) res.send(err);
-        res.json(users)
-    })
-})
-
-app.get("/clientlist", function(req,res){
-    Client.find(function (err,users) {
-        if(err) res.send(err);
-        res.json(users)
-    })
-})
-
-app.get("/obralist", function(req,res){
-    Obra.find(function (err,obras) {
-        if(err) res.send(err);
-        res.json(obras)
-    })
-})
 
 app.post("/contato", function(req,res){
 
@@ -105,6 +74,41 @@ app.post("/contato", function(req,res){
         }
     })
 })
+
+
+var directories = ['functions', 'routes', 'models']
+directories.forEach(function(directory){
+    requireDir(directory)
+});
+
+var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080
+var ip = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0'
+
+app.listen(port, ip)
+
+
+
+app.get("/userlist", isLoggedIn, function(req,res){
+    User.find(function (err,users) {
+        if(err) res.send(err);
+        res.json(users)
+    })
+})
+
+app.get("/clientlist", function(req,res){
+    Client.find(function (err,users) {
+        if(err) res.send(err);
+        res.json(users)
+    })
+})
+
+app.get("/obralist", function(req,res){
+    Obra.find(function (err,obras) {
+        if(err) res.send(err);
+        res.json(obras)
+    })
+})
+
 
 
 
